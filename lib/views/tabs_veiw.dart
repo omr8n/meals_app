@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/dummy_data.dart';
 import 'package:meals_app/models/meal_model.dart';
 import 'package:meals_app/views/categories_view.dart';
 import 'package:meals_app/views/filters_view.dart';
@@ -6,6 +7,13 @@ import 'package:meals_app/views/meals_view.dart';
 import 'package:meals_app/widgets/custom_snack_bar.dart';
 
 import '../widgets/main_drawer.dart';
+
+const kInitialFilter = {
+  Filter.isGlutenFree: false,
+  Filter.isLactoseFree: false,
+  Filter.isVegan: false,
+  Filter.isVegetarian: false,
+};
 
 // class TabsView extends StatefulWidget {
 //   static get routeName => 'tabs_screen';
@@ -109,12 +117,21 @@ class _TabsVeiwState extends State<TabsVeiw> {
     });
   }
 
+  Map<Filter, bool> selectedFilter = kInitialFilter;
   void _setView(String identifire) {
+    Navigator.of(context).pop();
     if (identifire == "Filters") {
-      Navigator.of(context).pop();
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const FiltersView(),
-      ));
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+            builder: (context) => FiltersView(
+              currentFilter: selectedFilter,
+            ),
+          ))
+          .then((value) =>
+                  setState(() => selectedFilter = value ?? kInitialFilter)
+              // log(value.toString());
+
+              );
     } else {
       Navigator.of(context).pop();
     }
@@ -122,8 +139,26 @@ class _TabsVeiwState extends State<TabsVeiw> {
 
   @override
   Widget build(BuildContext context) {
+    final List<MealModels> availableMeal = dummyMeals.where(
+      (meal) {
+        if (selectedFilter[Filter.isGlutenFree]! && !meal.isGlutenFree) {
+          return false;
+        }
+        if (selectedFilter[Filter.isLactoseFree]! && !meal.isLactoseFree) {
+          return false;
+        }
+        if (selectedFilter[Filter.isVegetarian]! && !meal.isVegetarian) {
+          return false;
+        }
+        if (selectedFilter[Filter.isVegan]! && !meal.isVegan) {
+          return false;
+        }
+        return true;
+      },
+    ).toList();
     Widget activePage = CategoriesView(
       ontoggleFavourite: _toggleMealFavouriteStatus,
+      availableMeal: availableMeal,
     );
     var activePageTitle = "Pick Your Categories";
     if (_selectedPageIndex == 1) {

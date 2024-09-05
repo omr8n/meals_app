@@ -154,8 +154,7 @@ class MainDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.of(context).pop();
-              onSelectedVeiw("meal");
+              onSelectedVeiw("Meal");
             },
             leading: Icon(
               Icons.restaurant_menu,

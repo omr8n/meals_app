@@ -109,36 +109,133 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:meals_app/views/tabs_veiw.dart';
 
-import '../widgets/main_drawer.dart';
+class FiltersView extends StatefulWidget {
+  const FiltersView({super.key, required this.currentFilter});
 
-class FiltersView extends StatelessWidget {
-  const FiltersView({super.key});
+  @override
+  State<FiltersView> createState() => _FiltersViewState();
+  final Map<Filter, bool> currentFilter;
+}
+
+enum Filter { isGlutenFree, isVegan, isVegetarian, isLactoseFree }
+
+class _FiltersViewState extends State<FiltersView> {
+  bool _isGlutenFree = false;
+  bool _isVegan = false;
+  bool _isVegetarian = false;
+  bool _isLactoseFree = false;
+
+  @override
+  void initState() {
+    _isGlutenFree = widget.currentFilter[Filter.isGlutenFree]!;
+    _isLactoseFree = widget.currentFilter[Filter.isLactoseFree]!;
+    _isVegan = widget.currentFilter[Filter.isVegan]!;
+    _isVegetarian = widget.currentFilter[Filter.isVegetarian]!;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MainDrawer(
-        onSelectedVeiw: (identiFire) {
-          Navigator.of(context).pop();
-          if (identiFire == "Meal") {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const TabsVeiw(),
-            ));
-          } else {
-            Navigator.of(context).pop();
-          }
-        },
-      ),
+      // drawer: MainDrawer(
+      //   onSelectedVeiw: (identiFire) {
+      //     Navigator.of(context).pop();
+      //     if (identiFire == "Meal") {
+      //       Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //         builder: (context) => const TabsVeiw(),
+      //       ));
+      //     } else {
+      //       Navigator.of(context).pop();
+      //     }
+      //   },
+      // ),
       appBar: AppBar(
         title: const Text('Your Filters'),
       ),
-      body: Column(
-        children: [
-          Container(),
-        ],
+      body: WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pop({
+            Filter.isGlutenFree: _isGlutenFree,
+            Filter.isLactoseFree: _isLactoseFree,
+            Filter.isVegan: _isVegan,
+            Filter.isVegetarian: _isVegetarian,
+          });
+          return false;
+        },
+        child: Column(
+          children: [
+            customSwitchListTile(
+              context,
+              title: "orman",
+              subtitle: "abo ali , ",
+              filter: _isGlutenFree,
+              onChanged: (value) {
+                setState(() {
+                  _isGlutenFree = value;
+                });
+              },
+            ),
+            customSwitchListTile(
+              context,
+              title: "orman",
+              subtitle: "abo ali , ",
+              filter: _isVegan,
+              onChanged: (value) {
+                setState(() {
+                  _isVegan = value;
+                });
+              },
+            ),
+            customSwitchListTile(
+              context,
+              title: "orman",
+              subtitle: "abo ali , ",
+              filter: _isVegetarian,
+              onChanged: (value) {
+                setState(() {
+                  _isVegetarian = value;
+                });
+              },
+            ),
+            customSwitchListTile(
+              context,
+              title: "orman",
+              subtitle: "abo ali , ",
+              filter: _isLactoseFree,
+              onChanged: (value) {
+                setState(() {
+                  _isLactoseFree = value;
+                });
+              },
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  SwitchListTile customSwitchListTile(BuildContext context,
+      {required String title,
+      required String subtitle,
+      required bool filter,
+      required void Function(bool value) onChanged}) {
+    return SwitchListTile(
+        activeColor: Theme.of(context).colorScheme.tertiary,
+        contentPadding: const EdgeInsets.only(left: 34, right: 22),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+        ),
+        value: filter,
+        onChanged: onChanged);
   }
 }

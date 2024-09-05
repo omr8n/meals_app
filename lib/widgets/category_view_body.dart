@@ -10,8 +10,10 @@ class CategoryViewBody extends StatelessWidget {
   const CategoryViewBody({
     super.key,
     required this.ontoggleFavourite,
+    required this.availableMeal,
   });
   final void Function(MealModels meal) ontoggleFavourite;
+  final List<MealModels> availableMeal;
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -25,6 +27,7 @@ class CategoryViewBody extends StatelessWidget {
       itemBuilder: (context, index) => CategoryGridItem(
         category: availableCategories[index],
         ontoggleFavourite: ontoggleFavourite,
+        availableMeal: availableMeal,
       ),
     );
   }

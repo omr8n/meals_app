@@ -8,14 +8,18 @@ import '../models/category_model.dart';
 
 class CategoryGridItem extends StatelessWidget {
   const CategoryGridItem(
-      {super.key, required this.category, required this.ontoggleFavourite});
+      {super.key,
+      required this.category,
+      required this.ontoggleFavourite,
+      required this.availableMeal});
   final CategoryModels category;
+  final List<MealModels> availableMeal;
   final void Function(MealModels meal) ontoggleFavourite;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        final List<MealModels> filterdMeal = dummyMeals
+        final List<MealModels> filterdMeal = availableMeal
             .where(
               (element) => element.categories.contains(category.id),
             )
